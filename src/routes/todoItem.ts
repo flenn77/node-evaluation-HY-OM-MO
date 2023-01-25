@@ -8,7 +8,7 @@ const isUsersItem: RequestHandler = async (req, res, next) => {
   try {
     const isOwner = await db.todoItem.findFirstOrThrow({
       where: {
-        todoList: {
+        PostTable: {
           userId: req.user.id
         },
       }
@@ -24,7 +24,7 @@ const isUsersItem: RequestHandler = async (req, res, next) => {
 
 router.post(
   '/todoItem',
-  body('todoListId').isUUID(),
+  body('PostTableId').isUUID(),
   body('description').isString(),
   isUsersItem,
   async (req, res) => {
@@ -32,7 +32,7 @@ router.post(
       validationResult(req).throw()
       const createdTodoItem  = await db.todoItem.create({
         data: {
-          todoListId: req.body.todoListId,
+          PostTableId: req.body.PostTableId,
           description: req.body.description
         },
       })

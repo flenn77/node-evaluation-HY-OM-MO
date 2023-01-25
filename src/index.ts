@@ -1,13 +1,16 @@
 import express from 'express'
 import * as dotenv from 'dotenv'
 import userRoutes from './routes/user'
-import todoListRoutes from './routes/todoList'
+import PostRoutes from './routes/PostTable'
 import todoItemRoutes from './routes/todoItem'
 import { protect } from './modules/auth'
 import { createNewUser, signIn } from './handlers/user'
 import config from './config'
 
 dotenv.config()
+
+
+
 
 const app = express()
 const PORT = config.port
@@ -20,7 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/api', protect, [
   userRoutes,
-  todoListRoutes,
+  PostRoutes,
   todoItemRoutes
 ])
 

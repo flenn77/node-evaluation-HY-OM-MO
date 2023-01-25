@@ -10,24 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TodoList {
+model PostTable {
   id        String     @id @unique @default(uuid())
   name      String
   todoItems TodoItem[]
-  user      User      @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
 }
 
 model TodoItem {
-  id          String   @id @unique @default(uuid())
+  id          String    @id @unique @default(uuid())
   description String
-  todoListId  String
-  todoList    TodoList @relation(fields: [todoListId], references: [id])
+  PostTableId String
+  PostTable   PostTable @relation(fields: [PostTableId], references: [id])
 }
 
 model User {
-  id       String     @id @unique @default(uuid())
-  username String     @unique @db.VarChar(64)
+  id       String      @id @unique @default(uuid())
+  username String      @unique @db.VarChar(64)
   password String
-  todos    TodoList[]
+  todos    PostTable[]
 }
