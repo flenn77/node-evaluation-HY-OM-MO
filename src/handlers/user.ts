@@ -9,6 +9,8 @@ interface TypedRequestParam extends Request {
   }
 }
 
+
+
 export const createNewUser: RequestHandler = async (req: TypedRequestParam, res) => {
   try {
     if (!(req.body?.username && req.body?.password)) {
