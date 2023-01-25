@@ -6,32 +6,32 @@ const app = Router()
 
 
 app.get('/todos', async (req, res) => {
-  const todos = await db.todoList.findMany({
+  const postTable = await db.postTable.findMany({
     where: {
       userId: req.user.id
     },
     include: {
-      todoItems: true
+      Comments: true
     }
   })
-  return res.status(200).json(todos)
+  return res.status(200).json(postTable)
 })
 
 app.get(
   '/todo/:uuid',
   async (req, res) => {
     try {
-      const todo = await db.todoList.findFirstOrThrow({
+      const postTable = await db.postTable.findFirstOrThrow({
         where: {
           id: req.params.uuid,
           userId: req.user.id
         },
         include: {
-          todoItems: true
+          Comments: true
         }
       })
 
-      return res.status(200).json(todo)
+      return res.status(200).json(postTable)
     } catch(e) {
       return res.status(400).json({ message: 'Not found' })
     }
@@ -45,24 +45,24 @@ app.post(
   async (req: Request, res: Response) => {
     try {
       validationResult(req).throw()
-      const createdTodoList = await db.todoList.create({
+      const createdPostTable = await db.postTable.create({
         data: {
           name: req.body.name,
           userId: req.user.id
         }
       })
 
-      return res.status(200).json(createdTodoList)
+      return res.status(200).json(createdPostTable)
     } catch(e) {
       console.log(e)
-      return res.status(400).json({error: e || 'Cannot create todoList'})
+      return res.status(400).json({error: e || 'Cannot create PostTable'})
     }
 })
 
 app.put('/todo/:uuid', body('name').exists().isString().notEmpty(), async (req, res) => {
   try {
     validationResult(req).throw()
-    const updatedTodoList = await db.todoList.update({
+    const updatedPostTable = await db.postTable.update({
       where: {
         id: req.params?.uuid,
       },
@@ -71,7 +71,7 @@ app.put('/todo/:uuid', body('name').exists().isString().notEmpty(), async (req, 
       }
     })
   
-    return res.status(200).json(updatedTodoList)
+    return res.status(200).json(updatedPostTable)
   } catch(e) {
     return res.status(400).json({message: e || 'Error while updating'})
   }
@@ -79,7 +79,8 @@ app.put('/todo/:uuid', body('name').exists().isString().notEmpty(), async (req, 
 
 app.delete('/todo/:uuid', async (req, res) => {
   try {
-    await db.todoList.delete({
+    
+    await db.postTable.delete({
       where: {
         id: req.params.uuid
       }

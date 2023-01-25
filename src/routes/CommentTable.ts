@@ -6,9 +6,9 @@ const router = Router()
 
 const isUsersItem: RequestHandler = async (req, res, next) => {
   try {
-    const isOwner = await db.todoItem.findFirstOrThrow({
+    const isOwner = await db.comment.findFirstOrThrow({
       where: {
-        todoList: {
+        PostTable: {
           userId: req.user.id
         },
       }
@@ -24,20 +24,20 @@ const isUsersItem: RequestHandler = async (req, res, next) => {
 
 router.post(
   '/todoItem',
-  body('todoListId').isUUID(),
+  body('PostTableId').isUUID(),
   body('description').isString(),
   isUsersItem,
   async (req, res) => {
     try {
       validationResult(req).throw()
-      const createdTodoItem  = await db.todoItem.create({
+      const createdCommentTable = await db.comment.create({
         data: {
-          todoListId: req.body.todoListId,
+          PostTableId: req.body.PostTableId,
           description: req.body.description
         },
       })
 
-      return res.status(201).json(createdTodoItem)
+      return res.status(201).json(createdCommentTable)
     } catch (e) {
       return res.status(400).json({ message: e || 'Error during creation'})
     }
@@ -51,7 +51,7 @@ router.put(
   async (req, res) => {
     try {
       validationResult(req).throw()
-      const updatedItem = await db.todoItem.update({
+      const updatedComment = await db.comment.update({
         where: {
           id: req.params?.uuid
         },
@@ -59,7 +59,7 @@ router.put(
           description: req.body.description
         }
       })
-      res.status(200).json(updatedItem)
+      res.status(200).json(updatedComment)
     } catch(e) {
       return res.status(400).json({ message: e || 'Error during update'})
     }
@@ -72,7 +72,7 @@ router.delete(
   async (req, res) => {
     try {
       const deletedId = req.params.uuid
-      await db.todoItem.delete({
+      await db.comment.delete({
         where: {
           id: deletedId
         }
