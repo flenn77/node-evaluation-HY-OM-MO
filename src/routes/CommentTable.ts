@@ -6,7 +6,7 @@ const router = Router()
 
 const isUsersItem: RequestHandler = async (req, res, next) => {
   try {
-    const isOwner = await db.commentTable.findFirstOrThrow({
+    const isOwner = await db.comment.findFirstOrThrow({
       where: {
         PostTable: {
           userId: req.user.id
@@ -23,7 +23,7 @@ const isUsersItem: RequestHandler = async (req, res, next) => {
 } 
 
 router.post(
-  '/todoItem',
+  '/comment',
   body('PostTableId').isUUID(),
   body('description').isString(),
   isUsersItem,
@@ -45,7 +45,7 @@ router.post(
 )
 
 router.put(
-  '/todoItem/:uuid',
+  '/comment/:uuid',
   isUsersItem,
   body('description').isLength({ min: 1 }),
   async (req, res) => {
@@ -67,7 +67,7 @@ router.put(
 )
 
 router.delete(
-  '/todoItem/:uuid',
+  '/comment/:uuid',
   isUsersItem,
   async (req, res) => {
     try {
@@ -85,6 +85,3 @@ router.delete(
 )
 
 export default router
-
-
-

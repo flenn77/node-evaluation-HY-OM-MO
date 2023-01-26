@@ -11,14 +11,14 @@ datasource db {
 }
 
 model PostTable {
-  id           String         @id @unique @default(uuid())
-  name         String
-  CommentTable CommentTable[]
-  user         User           @relation(fields: [userId], references: [id])
-  userId       String
+  id       String    @id @unique @default(uuid())
+  name     String
+  Comments Comment[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String
 }
 
-model CommentTable {
+model Comment {
   id          String    @id @unique @default(uuid())
   description String
   PostTableId String
@@ -29,5 +29,5 @@ model User {
   id       String      @id @unique @default(uuid())
   username String      @unique @db.VarChar(64)
   password String
-  post     PostTable[]
+  todos    PostTable[]
 }

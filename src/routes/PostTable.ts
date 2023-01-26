@@ -5,20 +5,20 @@ import db from "../db";
 const app = Router()
 
 
-app.get('/todos', async (req, res) => {
+app.get('/post', async (req, res) => {
   const postTable = await db.postTable.findMany({
     where: {
       userId: req.user.id
     },
     include: {
-      CommentTable: true
+      Comments: true
     }
   })
   return res.status(200).json(postTable)
 })
 
 app.get(
-  '/todo/:uuid',
+  '/post/:uuid',
   async (req, res) => {
     try {
       const postTable = await db.postTable.findFirstOrThrow({
@@ -27,7 +27,7 @@ app.get(
           userId: req.user.id
         },
         include: {
-          CommentTable: true
+          Comments: true
         }
       })
 
@@ -40,7 +40,7 @@ app.get(
 
 
 app.post(
-  '/todo',
+  '/post',
   body('name').exists().isString().notEmpty(),
   async (req: Request, res: Response) => {
     try {
@@ -59,7 +59,7 @@ app.post(
     }
 })
 
-app.put('/todo/:uuid', body('name').exists().isString().notEmpty(), async (req, res) => {
+app.put('/post/:uuid', body('name').exists().isString().notEmpty(), async (req, res) => {
   try {
     validationResult(req).throw()
     const updatedPostTable = await db.postTable.update({
@@ -77,7 +77,7 @@ app.put('/todo/:uuid', body('name').exists().isString().notEmpty(), async (req, 
   }
 })
 
-app.delete('/todo/:uuid', async (req, res) => {
+app.delete('/post/:uuid', async (req, res) => {
   try {
     
     await db.postTable.delete({
