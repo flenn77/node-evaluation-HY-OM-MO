@@ -32,5 +32,5 @@ model User {
   username String      @unique @db.VarChar(64)
   password String
   post     PostTable[]
-  comment  Comment[]
+  comments  Comment[]
 }

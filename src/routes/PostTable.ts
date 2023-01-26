@@ -11,7 +11,7 @@ app.get('/post', async (req, res) => {
       userId: req.user.id
     },
     include: {
-      Comments: true
+      comments: true
     }
   })
   return res.status(200).json(postTable)
@@ -27,7 +27,7 @@ app.get(
           userId: req.user.id
         },
         include: {
-          Comments: true
+          comments: true
         }
       })
 
