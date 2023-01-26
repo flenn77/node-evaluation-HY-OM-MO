@@ -11,7 +11,7 @@ app.get('/todos', async (req, res) => {
       userId: req.user.id
     },
     include: {
-      Comments: true
+      CommentTable: true
     }
   })
   return res.status(200).json(postTable)
@@ -27,7 +27,7 @@ app.get(
           userId: req.user.id
         },
         include: {
-          Comments: true
+          CommentTable: true
         }
       })
 

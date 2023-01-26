@@ -6,7 +6,7 @@ const router = Router()
 
 const isUsersItem: RequestHandler = async (req, res, next) => {
   try {
-    const isOwner = await db.comment.findFirstOrThrow({
+    const isOwner = await db.commentTable.findFirstOrThrow({
       where: {
         PostTable: {
           userId: req.user.id
