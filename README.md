@@ -4,23 +4,19 @@
 - Prisma
 
 ## Installing
-
-`git clone https://github.com/flenn77/node-evaluation-HY-OM-MO.git`
+`git clone https://github.com/flenn77/ode-evaluation-HY-OM-MO.git`
 `pnpm install`
 `pnpm prisma format`
 `npm i @prisma/client --save`
 `pnpm prisma migrate dev --name init`
 `pnpm run dev`
 
-
-
 ### User Routes
-- `POST /users/signup`: inscription
-- `POST /users/login`: connexion
-- `DELETE /users/:id`: supprimer un utilisateur (admin only)
+- `POST /user/signUp`: inscription
+- `POST /user/signIn`: connexion
+- `DELETE /user/:id`: supprimer un utilisateur (admin only)
 
-Example
-
+Example :
 `{
 "username": "toto",
 "password": "motdepasse"
@@ -42,14 +38,14 @@ Example :
 }`
 
 ### Comment Routes
-- `GET /comments`: recuperer les commentaires
-- `GET /comments/:postId`: recuperer un commentaire specifique
-- `POST /comments`: créer un commentaire
-- `DELETE /comments/:id`: supprimer un commentaire
-- `PUT /comments/:id`: modifier un commentaire
+- `GET /comment`: recuperer les commentaires
+- `GET /comment/:postId`: recuperer un commentaire specifique
+- `POST /comment`: créer un commentaire
+- `DELETE /comment/:id`: supprimer un commentaire
+- `PUT /comment/:id`: modifier un commentaire
 
 Example :
 `{
-"postId":" votre ID",
+"postId":" ID de l'article",
 "content": "Contenu du commentaire"
 }`
