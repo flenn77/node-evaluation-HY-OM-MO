@@ -1,61 +1,103 @@
-import { Request, RequestHandler } from "express";
-import db from "../db";
-import { comparePassword, createJWT, hashPassword } from "../modules/auth";
+import { Request, RequestHandler } from 'express';
+import db from '../db';
+import {
+        createJWT,
+        comparePassword,
+        hashPassword
+    } from '../modules/auth';
+
 
 interface TypedRequestParam extends Request {
-  body: {
-    username?: string;
-    password?: string;
-  }
+    body: {
+        username?: string;
+        password?: string;
+    }
 }
 
-
-
-export const createNewUser: RequestHandler = async (req: TypedRequestParam, res) => {
-  try {
-    if (!(req.body?.username && req.body?.password)) {
-      throw new Error('Invalid body provided')
+export const userDeleting: RequestHandler =  async (req, res) => {
+    const { id } = req.params;
+    console.log(req.user)
+    if (! id) {
+        res.status(400).json({ error: 'Erreur' });
+        return;
     }
-
-    const hash = await hashPassword(req.body.password)
-
-    const user = await db.user.create({
-      data: {
-        username: req.body.username,
-        password: hash,
-      }
-    })
-
-    const token = createJWT(user)
-
-    return res.status(201).json({ token })
-  } catch(e) {
-    res.status(400).json({ error: e?.toString() })
-  }
+    if (req.user.role === "ADMIN") {
+        try {
+            await db.user.delete({
+                where: {
+                    id
+                },
+                include: {
+                    posts: true,
+                    comments: true,
+                    },
+            })
+            res.status(200).json({ message: 'utilisateur supprime' });
+        }
+        catch (e) {
+            res.status(500).json({ error: 'Erreur' });
+        }
+    }
+    if(req.user.id === id){
+        try {
+            await db.user.delete({
+                where: {
+                    id
+                },
+                include: {
+                    posts: true, 
+                    comments: true,
+                  }
+            })
+            res.status(200).json({ message: 'utilisateur supprime' });
+        }
+        catch (e) {
+            res.status(500).json({ error: 'Erreur' });
+        }      
+}
+else{
+    res.status(401).json({ error: 'Vous avez pas les droits de supprimer l utilisateur ' });
+}
 }
 
-export const signIn: RequestHandler = async (req: TypedRequestParam, res) => {
-  try {
-    if (!(req.body?.username && req.body?.password)) {
-      throw new Error('Invalid body provided')
+export const NewUser: RequestHandler = async (req: TypedRequestParam, res) => {
+    const { username, password } = req.body;
+    if (! username || ! password) {
+        res.status(400).json({ error: 'Erreur' });
+        return;
     }
-    const user = await db.user.findUnique({
-      where: {
-        username: req.body.username
-      }
-    })
-  
-    if (user) {
-      const isValid = await comparePassword(req.body.password, user.password)
-
-      if (!isValid) {
-        return res.status(401).json({ error: 'Invalid password' })
-      }
-
-      const token = createJWT(user)
-      return res.status(200).json({ token })
+    if (await db.user.findUnique({ where: { username }})) {
+        res.status(400).json({ error: 'Username est deja pris' });
+        return;
     }
-  } catch(e) {
-    return res.status(400).json({ error: e?.toString() })
-  }
+    hashPassword(password)
+        .then((hash) => db.user.create({
+            data: {
+                username,
+                password: hash
+            }
+        }))
+        .then((user) => createJWT(user))
+        .then((token) => res.status(201).json({ token }));
+
 }
+
+export const Login: RequestHandler = async (req: TypedRequestParam, res) => {
+    const { username, password } = req.body;
+    if (! username || ! password) {
+        res.status(400).json({ error: 'Erreur' });
+        return;
+    }
+    db.user.findUnique({ where: { username }})
+        .then((user) => {
+            if (
+                ! user ||
+                ! comparePassword(password, user.password)
+            ) {
+                res.status(401).json({ error: 'Erreur' });
+                return;
+            }
+            const token = createJWT(user);
+            res.status(200).json({ token });
+        });
+};

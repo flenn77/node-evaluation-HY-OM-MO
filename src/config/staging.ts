@@ -1,4 +1,3 @@
-export default {
-  port: process.env.PORT,
-  name: 'staging'
-}
+// export default {
+//     port: process.env.PORT
+// }
